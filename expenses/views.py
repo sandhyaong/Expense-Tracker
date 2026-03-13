@@ -125,7 +125,7 @@ def add_expense(request):
             description=description,
             receipt=receipt
         )
-
+        # Expense.save()
         return redirect('/expenses/')
 
     return render(request,'add_expense.html',{
@@ -137,11 +137,13 @@ def add_expense(request):
 def expense_list(request):
 
     category = request.GET.get('category')
+
     if request.user.profile.role == "employee":
         expenses = Expense.objects.filter(employee=request.user)
     else:
         expenses = Expense.objects.all()
-    expenses = Expense.objects.all().order_by('-date')
+
+    expenses = expenses.order_by('-date')
 
     if category:
         expenses = expenses.filter(category_id=category)
@@ -163,6 +165,7 @@ def export_csv(request):
 def approve_expense(request, id):
      # ROLE CHECK
     if request.user.profile.role != "manager":
+        messages.error(request,"You are not authorised to approve expenses")
         return redirect("/")
     
     expense = Expense.objects.get(id=id)
@@ -183,6 +186,7 @@ def approve_expense(request, id):
 def reject_expense(request, id):
      # ROLE CHECK
     if request.user.profile.role != "manager":
+        messages.error(request,"You are not authorised to reject expenses")
         return redirect("/")
     expense = Expense.objects.get(id=id)
 
