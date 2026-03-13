@@ -1,12 +1,39 @@
-import pandas as pd
+from django.db.models import Sum
+from expenses.models import Expense
 
 
-def detect_abnormal_expense(expenses):
+def generate_ai_insight():
 
-    df = pd.DataFrame(expenses)
+    insights = []
 
-    avg = df['amount'].mean()
+    # Highest category
+    top_category = Expense.objects.values('category__name')\
+        .annotate(total=Sum('amount'))\
+        .order_by('-total')\
+        .first()
 
-    abnormal = df[df['amount'] > avg * 2]
+    if top_category:
+        insights.append(
+            f"💰 Highest spending category is {top_category['category__name']}."
+        )
 
-    return abnormal
+    # Highest department
+    top_department = Expense.objects.values('department__name')\
+        .annotate(total=Sum('amount'))\
+        .order_by('-total')\
+        .first()
+
+    if top_department:
+        insights.append(
+            f"🏢 Department spending the most is {top_department['department__name']}."
+        )
+
+    # Highest expense
+    highest = Expense.objects.order_by('-amount').first()
+
+    if highest:
+        insights.append(
+            f"⚠ Highest expense recorded: ₹{highest.amount} ({highest.title})."
+        )
+
+    return " ".join(insights)

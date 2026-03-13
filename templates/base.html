@@ -1,107 +1,201 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-<title>Office Expense Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Pro | Office Tracker</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-<style>
-
-body{
-background:#f4f6f9;
-}
-
-.sidebar{
-width:220px;
-height:100vh;
-background:#2c3e50;
-position:fixed;
-padding:20px;
-}
-
-.sidebar a{
-color:white;
-display:block;
-margin:15px 0;
-text-decoration:none;
-}
-
-.main{
-margin-left:240px;
-padding:20px;
-}
-
-.card-box{
-border-radius:10px;
-box-shadow:0 2px 10px rgba(0,0,0,0.1);
-}
-.active-menu {
-            background: white!important;
-            color: var(--accent-blue) !important;
+    <style>
+        :root {
+            --sidebar-bg: #1a1a1a;
+            --accent-gold: #c5a880;
+            --main-bg: #fcfaf8;
+            --text-muted: #999;
         }
 
-</style>
+        body {
+            font-family: 'Jost', sans-serif;
+            background-color: var(--main-bg);
+            margin: 0;
+            color: #333;
+        }
 
+        /* Sidebar Styling */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            position: fixed;
+            padding: 40px 20px;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .sidebar-brand {
+            font-family: 'Playfair Display', serif;
+            color: white;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 50px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .sidebar-brand span {
+            color: var(--accent-gold);
+        }
+
+        .sidebar a {
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            transition: 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a i {
+            width: 25px;
+            font-size: 1.1rem;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        .sidebar a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .active-menu {
+            color: var(--accent-gold) !important;
+            background: rgba(197, 168, 128, 0.1) !important;
+            border-left: 3px solid var(--accent-gold) !important;
+            font-weight: 500;
+        }
+
+        /* Main Content Styling */
+        .main {
+            margin-left: 260px;
+            min-height: 100vh;
+            padding: 40px 50px;
+        }
+
+        /* Top Header Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .user-profile {
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile i {
+            font-size: 1.2rem;
+            margin-left: 10px;
+            color: var(--accent-gold);
+        }
+
+        /* Toast Styling */
+        .toast-container { z-index: 9999; }
+        .custom-toast {
+            border-radius: 0;
+            border: none;
+            background: var(--sidebar-bg);
+            color: white;
+            border-left: 5px solid var(--accent-gold);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar { width: 70px; padding: 40px 10px; }
+            .sidebar a span, .sidebar-brand { display: none; }
+            .main { margin-left: 70px; }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="sidebar">
+    <div class="sidebar">
+        <a href="/" class="sidebar-brand">EXPENSE<span>PRO</span></a>
 
-<h4 style="color:white">Expense Manager</h4>
+        <a href="/" class="{% if request.path == '/' %}active-menu{% endif %}">
+            <i class="fa-solid fa-chart-line"></i> <span>Dashboard</span>
+        </a>
+        <a href="/add-expense/" class="{% if request.path == '/add-expense/' %}active-menu{% endif %}">
+            <i class="fa-solid fa-plus-circle"></i> <span>Add Expense</span>
+        </a>
+        <a href="/expenses/" class="{% if request.path == '/expenses/' %}active-menu{% endif %}">
+            <i class="fa-solid fa-list-ul"></i> <span>View Expenses</span>
+        </a>
+        <a href="/users/" class="{% if request.path == '/users/' %}active-menu{% endif %}">
+            <i class="fa-solid fa-user-gear"></i> <span>Manage Users</span>
+        </a>
+        <a href="/categories/" class="{% if request.path == '/categories/' %}active-menu{% endif %}">
+            <i class="fa-solid fa-tags"></i> <span>Categories</span>
+        </a>
+        <a href="/departments/" class="{% if request.path == '/departments/' %}active-menu{% endif %}">
+            <i class="fa-solid fa-building"></i> <span>Departments</span>
+        </a>
+        <a href="/approvals/" class="{% if request.path == '/approvals/' %}active-menu{% endif %}">
+            <i class="fa-solid fa-circle-check"></i> <span>Approvals</span>
+        </a>
 
-<a href="/">Dashboard</a>
-<a href="/add-expense/"  class="{% if request.path == '/add-expense/' %}active-menu{% endif %}">Add Expense</a>
-<a href="/expenses/" class="{% if request.path == '/expenses/' %}active-menu{% endif %}">View Expenses</a>
-<a href="/users/" class="{% if request.path == '/users/' %}active-menu{% endif %}">Manage Users</a>
-<a href="/categories/" class="{% if request.path == '/categories/' %}active-menu{% endif %}">Manage Categories</a>
-<a href="/departments/" class="{% if request.path == '/departments/' %}active-menu{% endif %}">Manage Departments</a>
-<a href="/approvals/" class="{% if request.path == '/approvals/' %}active-menu{% endif %}">Approvals</a>
+        <div style="position: absolute; bottom: 30px; left: 20px; right: 20px;">
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <a href="/logout/" style="color: #ff4d4d;">
+                <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+            </a>
+        </div>
+    </div>
 
-<hr>
-<a href="/logout/" class="btn btn-sm btn-danger">
-Logout
-</a>
+    <div class="main">
+        <div class="top-nav">
+            <div class="user-profile">
+                {{ request.user.username }}
+                <i class="fa-solid fa-circle-user"></i>
+            </div>
+        </div>
 
-</div>
+        {% block content %}
+        {% endblock %}
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="main">
-    {% block content %}
-<div style="position:absolute; right:20px; top:20px;">
+    {% if messages %}
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        {% for message in messages %}
+        <div class="toast show custom-toast shadow-lg" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fa-solid fa-bell me-2" style="color: var(--accent-gold);"></i> {{ message }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-<span style="color:white">{{ request.user.username }}</span>
-</div>
-{% endblock %}
-
-</div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- toster -->
- {% if messages %}
-
-<div class="toast-container position-fixed top-0 end-0 p-3">
-
-{% for message in messages %}
-
-<div class="toast show align-items-center text-bg-success border-0">
-
-<div class="d-flex">
-
-<div class="toast-body">
-{{ message }}
-</div>
-
-<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-
-</div>
-
-</div>
-
-{% endfor %}
-
-</div>
-
-{% endif %}
 </body>
 </html>

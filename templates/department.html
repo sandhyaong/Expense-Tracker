@@ -1,44 +1,144 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .page-header {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #1a1a1a;
+        margin-bottom: 30px;
+    }
 
-<h3>Departments</h3>
+    .btn-gold-add {
+        background-color: #c5a880;
+        color: white;
+        border-radius: 0;
+        border: none;
+        padding: 12px 25px;
+        font-family: 'Jost', sans-serif;
+        letter-spacing: 1.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.3s;
+    }
 
-<a href="{% url 'add_department' %}" class="btn btn-primary mb-3">
-Add Department
-</a>
+    .btn-gold-add:hover {
+        background-color: #1a1a1a;
+        color: white;
+    }
 
-<table class="table table-bordered">
+    /* Table Styling */
+    .premium-table {
+        border-collapse: separate;
+        border-spacing: 0 12px;
+        width: 100%;
+        margin-top: 20px;
+    }
 
-<tr>
-<th>Name</th>
-<th width="200">Action</th>
-</tr>
+    .premium-table th {
+        border: none;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        color: #999;
+        padding: 15px 20px;
+        font-weight: 600;
+    }
 
-{% for d in departments %}
+    .premium-table tbody tr {
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        transition: 0.3s;
+    }
 
-<tr>
+    .premium-table tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    }
 
-<td>{{ d.name }}</td>
+    .premium-table tbody td {
+        padding: 20px;
+        border: none;
+        vertical-align: middle;
+        font-size: 1rem;
+    }
 
-<td>
+    /* Action Links */
+    .action-link {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        text-decoration: none;
+        margin-right: 15px;
+        transition: 0.3s;
+    }
 
-<a href="{% url 'edit_department' d.id %}" class="btn btn-warning btn-sm">
-Edit
-</a>
+    .edit-link { color: #c5a880; }
+    .edit-link:hover { color: #1a1a1a; }
+    
+    .delete-link { color: #e74a3b; }
+    .delete-link:hover { color: #c0392b; }
 
-<a href="{% url 'delete_department' d.id %}" 
-class="btn btn-danger btn-sm"
-onclick="return confirm('Delete this department?')">
-Delete
-</a>
+    .dept-icon {
+        color: #ddd;
+        margin-right: 15px;
+        font-size: 1.1rem;
+    }
+</style>
 
-</td>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h1 class="page-header">Departments</h1>
+            <p class="text-muted" style="margin-top: -20px;">Manage organizational units and budget structures.</p>
+        </div>
+        <div class="mb-2">
+            <a href="{% url 'add_department' %}" class="btn-gold-add">
+                <i class="fa-solid fa-plus me-2"></i> Add New Department
+            </a>
+        </div>
+    </div>
 
-</tr>
-
-{% endfor %}
-
-</table>
+    <div class="table-responsive">
+        <table class="premium-table">
+            <thead>
+                <tr>
+                    <th>Department Name</th>
+                    <th class="text-end" width="250">Management Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in departments %}
+                <tr>
+                    <td class="fw-bold">
+                        <i class="fa-solid fa-building-user dept-icon"></i>
+                        {{ d.name }}
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'edit_department' d.id %}" class="action-link edit-link">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </a>
+                        <a href="{% url 'delete_department' d.id %}" 
+                           class="action-link delete-link"
+                           onclick="return confirm('Are you sure you want to permanently delete this department?')">
+                            <i class="fa-solid fa-trash-can"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" class="text-center py-5 text-muted italic">
+                        No departments have been defined yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}

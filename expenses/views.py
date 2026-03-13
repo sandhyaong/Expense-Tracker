@@ -14,6 +14,7 @@ from datetime import timedelta
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
+from ai_module.expense_ai import generate_ai_insight
 
 
 @login_required
@@ -68,12 +69,14 @@ def dashboard(request):
 
     insight = ""
 
-    if current_total > previous_total:
-        insight = "⚠ Spending increased compared to last month."
-    elif current_total < previous_total:
-        insight = "✅ Spending decreased compared to last month."
-    else:
-     insight = "Spending unchanged."
+    # if current_total > previous_total:
+    #     insight = "⚠ Spending increased compared to last month."
+    # elif current_total < previous_total:
+    #     insight = "✅ Spending decreased compared to last month."
+    # else:
+    #  insight = "Spending unchanged."
+
+    ai_result = generate_ai_insight()
 
     context = {
         'total_expense': total_expense,
@@ -92,7 +95,8 @@ def dashboard(request):
         'dept_totals': json.dumps(dept_totals),
 
         'recent_expenses': recent_expenses,
-        "context_insight": insight
+        # "context_insight": insight
+        "context_insight": ai_result
     }
 
     return render(request, 'dashboard.html', context)
@@ -164,7 +168,7 @@ def export_csv(request):
 @login_required
 def approve_expense(request, id):
      # ROLE CHECK
-    if request.user.profile.role != "manager":
+    if request.user.profile.role not in ["manager", "admin"]:
         messages.error(request,"You are not authorised to approve expenses")
         return redirect("/")
     
@@ -185,7 +189,7 @@ def approve_expense(request, id):
 @login_required
 def reject_expense(request, id):
      # ROLE CHECK
-    if request.user.profile.role != "manager":
+    if request.user.profile.role not in ["manager", "admin"]:
         messages.error(request,"You are not authorised to reject expenses")
         return redirect("/")
     expense = Expense.objects.get(id=id)
@@ -217,13 +221,18 @@ def approvals(request):
 
     profile, created = Profile.objects.get_or_create(user=request.user)
 
-    if request.user.profile.role != "manager":
+    if request.user.profile.role not in ["manager", "admin"]:
+        messages.error(request,"You are not authorized to view approvals")
         return redirect("/")
 
     expenses = Expense.objects.filter(status="pending")
+    approved_expenses = Expense.objects.filter(status="approved")
+    rejected_expenses = Expense.objects.filter(status="rejected")
 
     return render(request,"approvals.html",{
-        "expenses":expenses
+        "expenses":expenses,
+        "approved_expenses":approved_expenses,
+        "rejected_expenses":rejected_expenses
     })
 
 # AddCategory
@@ -242,6 +251,30 @@ def add_category(request):
         return redirect("/categories/")
 
     return render(request,"add_category.html")
+def edit_category(request, id):
+
+    category = Category.objects.get(id=id)
+
+    if request.method == "POST":
+        category.name = request.POST.get("name")
+        category.description = request.POST.get("description")
+        category.save()
+
+        return redirect("/categories")
+
+    return render(request, "add_category.html", {
+        "category": category
+    })
+
+
+def delete_category(request, id):
+
+    category = get_object_or_404(Category, id=id)
+    category.delete()
+    messages.success(request, "Category deleted successfully")
+
+    return redirect("/categories")
+
 
 # emailNotification
 

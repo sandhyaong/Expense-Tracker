@@ -1,42 +1,162 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .page-header {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #1a1a1a;
+        margin-bottom: 30px;
+    }
 
-<h3>Users</h3>
+    .btn-gold-add {
+        background-color: #c5a880;
+        color: white;
+        border-radius: 0;
+        border: none;
+        padding: 12px 25px;
+        font-family: 'Jost', sans-serif;
+        letter-spacing: 1.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.3s;
+    }
 
-<table class="table table-bordered">
+    .btn-gold-add:hover {
+        background-color: #1a1a1a;
+        color: white;
+    }
 
-<tr>
-<th>Username</th>
-<th>Email</th>
-<th>Role</th>
-<th>Action</th>
-</tr>
+    /* Premium Table Styling */
+    .premium-table {
+        border-collapse: separate;
+        border-spacing: 0 12px;
+        width: 100%;
+        margin-top: 20px;
+    }
 
-{% for u in users %}
+    .premium-table th {
+        border: none;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        color: #999;
+        padding: 15px 20px;
+        font-weight: 600;
+    }
 
-<tr>
-<td>{{ u.username }}</td>
-<td>{{ u.email }}</td>
-<!-- <td>{{ u.profile.role }}</td> -->
- <td>
-{% if u.profile %}
-{{ u.profile.role }}
-{% else %}
-No Role
-{% endif %}
-</td>
-<td>
-<a href="/assign-role/{{u.id}}" class="btn btn-sm btn-primary">
-Assign Role
-</a>
-</td>
-</tr>
+    .premium-table tbody tr {
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        transition: 0.3s;
+    }
 
-{% endfor %}
+    .premium-table tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    }
 
-</table>
-<a href="/create-user/" class="btn btn-primary mb-3">
-Add User
-</a>
+    .premium-table tbody td {
+        padding: 20px;
+        border: none;
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
+
+    /* Role Badge Styling */
+    .role-badge {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        padding: 5px 12px;
+        background: #f8f9fa;
+        color: #1a1a1a;
+        border: 1px solid #eee;
+        display: inline-block;
+    }
+
+    /* Action Link */
+    .action-link {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        text-decoration: none;
+        color: #c5a880;
+        transition: 0.3s;
+    }
+
+    .action-link:hover {
+        color: #1a1a1a;
+    }
+
+    .user-icon {
+        color: #ddd;
+        margin-right: 15px;
+        font-size: 1.1rem;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h1 class="page-header">User Management</h1>
+            <p class="text-muted" style="margin-top: -20px;">Manage team members and their system access levels.</p>
+        </div>
+        <div class="mb-2">
+            <a href="/create-user/" class="btn-gold-add">
+                <i class="fa-solid fa-user-plus me-2"></i> Add New User
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="premium-table">
+            <thead>
+                <tr>
+                    <th>Identity</th>
+                    <th>Email Address</th>
+                    <th>System Role</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td class="fw-bold">
+                        <i class="fa-solid fa-circle-user user-icon"></i>
+                        {{ u.username }}
+                    </td>
+                    <td class="text-muted">{{ u.email }}</td>
+                    <td>
+                        <span class="role-badge">
+                            {% if u.profile %}
+                                {{ u.profile.role }}
+                            {% else %}
+                                No Role
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <a href="/assign-role/{{u.id}}" class="action-link">
+                            <i class="fa-solid fa-user-shield me-1"></i> Assign Role
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-5 text-muted italic">
+                        No users registered in the system.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}

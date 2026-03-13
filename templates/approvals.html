@@ -1,44 +1,176 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .page-header {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #1a1a1a;
+        margin-bottom: 10px;
+    }
 
-<h3>Pending Expense Approvals</h3>
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        color: #1a1a1a;
+        margin-top: 50px;
+        margin-bottom: 25px;
+        position: relative;
+        padding-left: 15px;
+        border-left: 4px solid var(--accent-gold, #c5a880);
+    }
 
-<table class="table table-bordered">
+    /* Premium Table Styling */
+    .premium-table {
+        border-collapse: separate;
+        border-spacing: 0 12px;
+        width: 100%;
+    }
 
-<tr>
-<th>Title</th>
-<th>Amount</th>
-<th>Employee</th>
-<th>Date</th>
-<th>Action</th>
-</tr>
+    .premium-table th {
+        border: none;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        color: #999;
+        padding: 15px 20px;
+        font-weight: 600;
+    }
 
-{% for e in expenses %}
+    .premium-table tbody tr {
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        transition: 0.3s;
+    }
 
-<tr>
+    .premium-table tbody td {
+        padding: 20px;
+        border: none;
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
 
-<td>{{ e.title }}</td>
-<td>₹ {{ e.amount }}</td>
-<td>{{ e.employee.username }}</td>
-<td>{{ e.date }}</td>
+    /* Action Buttons */
+    .action-btn {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 0;
+        margin-right: 5px;
+        text-decoration: none;
+        display: inline-block;
+    }
 
-<td>
+    .amount-gold {
+        color: #c5a880;
+        font-weight: 500;
+    }
 
-<a href="/approve/{{e.id}}/" class="btn btn-success btn-sm">
-Approve
-</a>
+    .empty-state {
+        background: #fff;
+        padding: 30px;
+        text-align: center;
+        color: #999;
+        font-style: italic;
+    }
+</style>
 
-<a href="/reject/{{e.id}}/" class="btn btn-danger btn-sm">
-Reject
-</a>
+<div class="container-fluid">
+    <div class="mb-5">
+        <h1 class="page-header">Expense Approvals</h1>
+        <p class="text-muted">Review, authorize, or decline pending financial requests.</p>
+    </div>
 
-</td>
+    <h3 class="section-title">Pending Requests</h3>
+    <div class="table-responsive">
+        <table class="premium-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Amount</th>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in expenses %}
+                <tr>
+                    <td class="fw-bold">{{ e.title }}</td>
+                    <td class="amount-gold">₹ {{ e.amount }}</td>
+                    <td>{{ e.employee.username }}</td>
+                    <td class="text-muted small">{{ e.date }}</td>
+                    <td class="text-end">
+                        <a href="/approve/{{e.id}}/" class="btn btn-success action-btn">Approve</a>
+                        <a href="/reject/{{e.id}}/" class="btn btn-danger action-btn">Reject</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="empty-state">No pending approvals found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-</tr>
+    <h3 class="section-title">History: Approved</h3>
+    <div class="table-responsive">
+        <table class="premium-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Amount</th>
+                    <th>Employee</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in approved_expenses %}
+                <tr>
+                    <td class="fw-bold">{{ e.title }}</td>
+                    <td class="amount-gold">₹ {{ e.amount }}</td>
+                    <td>{{ e.employee.username }}</td>
+                    <td class="text-muted small">{{ e.date }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="empty-state">No approved expenses yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-{% endfor %}
-
-</table>
+    <h3 class="section-title">History: Rejected</h3>
+    <div class="table-responsive">
+        <table class="premium-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Amount</th>
+                    <th>Employee</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in rejected_expenses %}
+                <tr>
+                    <td class="fw-bold">{{ e.title }}</td>
+                    <td class="amount-gold">₹ {{ e.amount }}</td>
+                    <td>{{ e.employee.username }}</td>
+                    <td class="text-muted small">{{ e.date }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="empty-state">No rejected expenses.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}

@@ -1,68 +1,156 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .page-header {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #1a1a1a;
+        margin-bottom: 30px;
+    }
 
-<h3>Add Expense</h3>
+    .form-container {
+        max-width: 800px;
+        background: white;
+        padding: 50px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        margin-bottom: 50px;
+        border: 1px solid #f1f1f1;
+    }
 
-<form method="POST">
+    .form-label-custom {
+        font-family: 'Jost', sans-serif;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1.5px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 10px;
+    }
 
-{% csrf_token %}
+    /* Minimalist Inputs */
+    .form-control-custom {
+        border: none;
+        border-bottom: 1px solid #ddd;
+        border-radius: 0;
+        padding: 12px 0;
+        background: transparent;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        color: #333;
+    }
 
-<div class="mb-3">
-<label>Title</label>
-<input type="text" name="title" class="form-control">
+    .form-control-custom:focus {
+        box-shadow: none;
+        border-color: #c5a880; /* Gold Focus */
+        outline: none;
+    }
+
+    select.form-control-custom {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ccc' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right center;
+    }
+
+    .btn-save {
+        background: #1a1a1a;
+        color: white;
+        border: 1px solid #1a1a1a;
+        border-radius: 0;
+        padding: 15px 40px;
+        font-family: 'Jost', sans-serif;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transition: 0.4s;
+        margin-top: 20px;
+    }
+
+    .btn-save:hover {
+        background: transparent;
+        color: #1a1a1a;
+    }
+
+    .file-input-wrapper {
+        position: relative;
+        padding: 20px;
+        border: 2px dashed #eee;
+        text-align: center;
+        transition: 0.3s;
+    }
+
+    .file-input-wrapper:hover {
+        border-color: #c5a880;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h1 class="page-header">Record New Expense</h1>
+            <p class="text-muted mb-5" style="margin-top: -20px;">Enter transaction details for archival and approval.</p>
+
+            <div class="form-container">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-8 mb-4">
+                            <label class="form-label-custom">Expense Title</label>
+                            <input type="text" name="title" class="form-control-custom w-100" placeholder="e.g. Monthly Server Maintenance" required>
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label class="form-label-custom">Amount (₹)</label>
+                            <input type="number" name="amount" class="form-control-custom w-100" placeholder="0.00" step="0.01" required>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label-custom">Category</label>
+                            <select name="category" class="form-control-custom w-100" required>
+                                <option value="" selected disabled>Choose Category</option>
+                                {% for c in categories %}
+                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label-custom">Department</label>
+                            <select name="department" class="form-control-custom w-100" required>
+                                <option value="" selected disabled>Assign Department</option>
+                                {% for d in departments %}
+                                <option value="{{ d.id }}">{{ d.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label-custom">Transaction Date</label>
+                            <input type="date" name="date" class="form-control-custom w-100" required>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label-custom">Receipt Image / PDF</label>
+                            <input type="file" name="receipt" class="form-control-custom w-100">
+                        </div>
+
+                        <div class="col-12 mb-4">
+                            <label class="form-label-custom">Additional Description</label>
+                            <textarea name="description" class="form-control-custom w-100" rows="3" placeholder="Notes for the accounting department..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-save shadow-sm">
+                            <i class="fa-solid fa-paper-plane me-2"></i> Save Expense
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div class="mb-3">
-<label>Amount</label>
-<input type="number" name="amount" class="form-control">
-</div>
-<!-- Category -->
-<div class="mb-3">
-<label>Category</label>
-
-<select name="category" class="form-control" required>
-<option value="">Select Category</option>
-
-{% for c in categories %}
-<option value="{{ c.id }}">{{ c.name }}</option>
-{% endfor %}
-
-</select>
-
-</div>
-<!-- Department -->
-<div class="mb-3">
-<label>Department</label>
-
-<select name="department" class="form-control" required>
-<option value="">Select Department</option>
-
-{% for d in departments %}
-<option value="{{ d.id }}">{{ d.name }}</option>
-{% endfor %}
-
-</select>
-
-</div>
-
-<div class="mb-3">
-<label>Date</label>
-<input type="date" name="date" class="form-control">
-</div>
-<!-- Receipt -->
- <div class="mb-3">
-<label>Receipt</label>
-<input type="file" name="receipt" class="form-control">
-</div>
- <!--  -->
-<div class="mb-3">
-<label>Description</label>
-<textarea name="description" class="form-control"></textarea>
-</div>
-
-<button class="btn btn-primary">Save Expense</button>
-
-</form>
-
 {% endblock %}

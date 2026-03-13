@@ -1,27 +1,148 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .page-header {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #1a1a1a;
+        margin-bottom: 30px;
+    }
 
-<h3>Categories</h3>
+    .btn-gold-add {
+        background-color: #c5a880;
+        color: white;
+        border-radius: 0;
+        border: none;
+        padding: 12px 25px;
+        font-family: 'Jost', sans-serif;
+        letter-spacing: 1.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.3s;
+    }
 
-<table class="table table-bordered">
+    .btn-gold-add:hover {
+        background-color: #1a1a1a;
+        color: white;
+    }
 
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
+    /* Premium Table Styling */
+    .premium-table {
+        border-collapse: separate;
+        border-spacing: 0 12px;
+        width: 100%;
+        margin-top: 20px;
+    }
 
-{% for c in categories %}
+    .premium-table th {
+        border: none;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        color: #999;
+        padding: 15px 20px;
+        font-weight: 600;
+    }
 
-<tr>
-<td>{{ c.name }}</td>
-<td>{{ c.description }}</td>
-</tr>
+    .premium-table tbody tr {
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        transition: 0.3s;
+    }
 
-{% endfor %}
+    .premium-table tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    }
 
-</table>
-<a href="/add-category/" class="btn btn-primary mb-3">
-Add Category
-</a>
+    .premium-table tbody td {
+        padding: 20px;
+        border: none;
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
+
+    /* Action Links */
+    .action-link {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        text-decoration: none;
+        margin-right: 15px;
+        transition: 0.3s;
+    }
+
+    .edit-link { color: #c5a880; }
+    .edit-link:hover { color: #1a1a1a; }
+    
+    .delete-link { color: #e74a3b; }
+    .delete-link:hover { color: #c0392b; }
+
+    .cat-icon {
+        color: #ddd;
+        margin-right: 15px;
+        font-size: 1.1rem;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h1 class="page-header">Expense Categories</h1>
+            <p class="text-muted" style="margin-top: -20px;">Classify spending for better financial reporting.</p>
+        </div>
+        <div class="mb-2">
+            <a href="/add-category/" class="btn-gold-add">
+                <i class="fa-solid fa-plus me-2"></i> Add New Category
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="premium-table">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Description</th>
+                    <th class="text-end" width="200">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in categories %}
+                <tr>
+                    <td class="fw-bold">
+                        <i class="fa-solid fa-tag cat-icon"></i>
+                        {{ c.name }}
+                    </td>
+                    <td>
+                        <span class="text-muted">{{ c.description|default:"No description provided." }}</span>
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'edit_category' c.id %}" class="action-link edit-link">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </a>
+                        <a href="{% url 'delete_category' c.id %}" 
+                           class="action-link delete-link"
+                           onclick="return confirm('Delete this category?')">
+                            <i class="fa-solid fa-trash-can"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center py-5 text-muted italic">
+                        No categories found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}
