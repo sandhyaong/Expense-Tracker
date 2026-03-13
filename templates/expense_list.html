@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Expenses</h3>
+
+<form method="GET">
+
+<select name="category" class="form-control mb-3">
+
+<option value="">All Categories</option>
+
+{% for c in categories %}
+
+<option value="{{ c.id }}">{{ c.name }}</option>
+{% endfor %}
+
+</select>
+
+<button class="btn btn-secondary">Filter</button>
+
+</form>
+<a href="/export/" class="btn btn-success mb-3">
+Export CSV
+</a>
+<!-- <a href="/approve/{{e.id}}" class="btn btn-success btn-sm">
+Approve
+</a>
+
+<a href="/reject/{{e.id}}" class="btn btn-danger btn-sm">
+Reject
+</a> -->
+<table class="table table-bordered mt-4">
+
+<tr>
+<th>Title</th>
+<th>Amount</th>
+<th>Category</th>
+<th>Department</th>
+<th>Date</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+{% for e in expenses %}
+
+<tr>
+<td>{{ e.title }}</td>
+<td>₹ {{ e.amount }}</td>
+<td>{{ e.category.name }}</td>
+<td>{{ e.department.name }}</td>
+<td>{{ e.date }}</td>
+<td>{{ e.status }}</td>
+<td>
+
+<!-- <a href="/approve/{{ e.id }}/" class="btn btn-success btn-sm">
+Approve
+</a>
+
+<a href="/reject/{{ e.id }}/" class="btn btn-danger btn-sm">
+Reject
+</a> -->
+<a href="{% url 'approve_expense' e.id %}" class="btn btn-success btn-sm">
+Approve
+</a>
+
+<a href="{% url 'reject_expense' e.id %}" class="btn btn-danger btn-sm">
+Reject
+</a>
+</td>
+<td>
+{% if e.receipt %}
+<a href="{{ e.receipt.url }}" target="_blank">View</a>
+{% endif %}
+</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

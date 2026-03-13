@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Pending Expense Approvals</h3>
+
+<table class="table table-bordered">
+
+<tr>
+<th>Title</th>
+<th>Amount</th>
+<th>Employee</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+
+{% for e in expenses %}
+
+<tr>
+
+<td>{{ e.title }}</td>
+<td>₹ {{ e.amount }}</td>
+<td>{{ e.employee.username }}</td>
+<td>{{ e.date }}</td>
+
+<td>
+
+<a href="/approve/{{e.id}}/" class="btn btn-success btn-sm">
+Approve
+</a>
+
+<a href="/reject/{{e.id}}/" class="btn btn-danger btn-sm">
+Reject
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

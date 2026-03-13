@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Assign Role - {{ user.username }}</h3>
+
+<form method="POST">
+{% csrf_token %}
+
+<select name="role" class="form-control">
+
+<option value="admin">Admin</option>
+<option value="manager">Manager</option>
+<option value="employee">Employee</option>
+
+</select>
+
+<br>
+
+<button class="btn btn-success">Save</button>
+
+</form>
+
+{% endblock %}

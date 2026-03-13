@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Add Expense</h3>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<div class="mb-3">
+<label>Title</label>
+<input type="text" name="title" class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Amount</label>
+<input type="number" name="amount" class="form-control">
+</div>
+<!-- Category -->
+<div class="mb-3">
+<label>Category</label>
+
+<select name="category" class="form-control" required>
+<option value="">Select Category</option>
+
+{% for c in categories %}
+<option value="{{ c.id }}">{{ c.name }}</option>
+{% endfor %}
+
+</select>
+
+</div>
+<!-- Department -->
+<div class="mb-3">
+<label>Department</label>
+
+<select name="department" class="form-control" required>
+<option value="">Select Department</option>
+
+{% for d in departments %}
+<option value="{{ d.id }}">{{ d.name }}</option>
+{% endfor %}
+
+</select>
+
+</div>
+
+<div class="mb-3">
+<label>Date</label>
+<input type="date" name="date" class="form-control">
+</div>
+<!-- Receipt -->
+ <div class="mb-3">
+<label>Receipt</label>
+<input type="file" name="receipt" class="form-control">
+</div>
+ <!--  -->
+<div class="mb-3">
+<label>Description</label>
+<textarea name="description" class="form-control"></textarea>
+</div>
+
+<button class="btn btn-primary">Save Expense</button>
+
+</form>
+
+{% endblock %}

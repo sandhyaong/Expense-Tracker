@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Users</h3>
+
+<table class="table table-bordered">
+
+<tr>
+<th>Username</th>
+<th>Email</th>
+<th>Role</th>
+<th>Action</th>
+</tr>
+
+{% for u in users %}
+
+<tr>
+<td>{{ u.username }}</td>
+<td>{{ u.email }}</td>
+<!-- <td>{{ u.profile.role }}</td> -->
+ <td>
+{% if u.profile %}
+{{ u.profile.role }}
+{% else %}
+No Role
+{% endif %}
+</td>
+<td>
+<a href="/assign-role/{{u.id}}" class="btn btn-sm btn-primary">
+Assign Role
+</a>
+</td>
+</tr>
+
+{% endfor %}
+
+</table>
+<a href="/create-user/" class="btn btn-primary mb-3">
+Add User
+</a>
+{% endblock %}

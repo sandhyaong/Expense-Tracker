@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Categories</h3>
+
+<table class="table table-bordered">
+
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+
+{% for c in categories %}
+
+<tr>
+<td>{{ c.name }}</td>
+<td>{{ c.description }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+<a href="/add-category/" class="btn btn-primary mb-3">
+Add Category
+</a>
+{% endblock %}
