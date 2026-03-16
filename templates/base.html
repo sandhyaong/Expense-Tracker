@@ -146,6 +146,8 @@
         <a href="/expenses/" class="{% if request.path == '/expenses/' %}active-menu{% endif %}">
             <i class="fa-solid fa-list-ul"></i> <span>View Expenses</span>
         </a>
+        <!-- Hide for EMP -->
+         {% if request.user.profile.role == "admin" or request.user.profile.role == "manager" %}
         <a href="/users/" class="{% if request.path == '/users/' %}active-menu{% endif %}">
             <i class="fa-solid fa-user-gear"></i> <span>Manage Users</span>
         </a>
@@ -158,7 +160,7 @@
         <a href="/approvals/" class="{% if request.path == '/approvals/' %}active-menu{% endif %}">
             <i class="fa-solid fa-circle-check"></i> <span>Approvals</span>
         </a>
-
+        {% endif %}
         <div style="position: absolute; bottom: 30px; left: 20px; right: 20px;">
             <hr style="border-color: rgba(255,255,255,0.1);">
             <a href="/logout/" style="color: #ff4d4d;">

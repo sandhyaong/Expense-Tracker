@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from .models import Profile
-
+from django.contrib import messages
 
 def login_view(request):
 
@@ -21,6 +21,8 @@ def login_view(request):
 
             login(request, user)
             return redirect('/')
+        else:
+            messages.error(request, "Invalid username or password")
 
     return render(request, "login.html")
 

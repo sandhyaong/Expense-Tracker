@@ -80,8 +80,8 @@ DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'office_expense_db',
-        'USER': 'expense_user',
-        'PASSWORD': 'root123',
+        'USER': 'root',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3307',
     }

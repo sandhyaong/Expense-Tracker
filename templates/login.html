@@ -176,7 +176,13 @@
         <div class="login-box">
             <h2>Welcome Back</h2>
             <p>Please enter your credentials to access your dashboard.</p>
-
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-danger mt-2">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
             <form method="POST">
                 {% csrf_token %}
                 <div class="mb-4">
